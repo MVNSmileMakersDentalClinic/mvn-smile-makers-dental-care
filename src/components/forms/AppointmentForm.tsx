@@ -2,12 +2,23 @@
 
 import { useState } from "react";
 import { Calendar, CheckCircle2 } from "lucide-react";
-import { appointmentServices, appointmentLocations, doctors, timeSlots } from "@/lib/data";
+import {
+  appointmentServices,
+  appointmentLocations,
+  doctors,
+  timeSlots,
+} from "@/lib/data";
 import { siteConfig, formatPhoneDisplay, getTelLink } from "@/lib/metadata";
+import {
+  buildAppointmentWhatsAppMessage,
+  openWhatsApp,
+} from "@/lib/whatsapp";
+import { submitToWeb3Forms } from "@/lib/web3forms-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { WhatsAppButton } from "@/components/shared/WhatsAppButton";
 import {
   Select,
   SelectContent,
@@ -23,16 +34,104 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+const initialForm = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  location: "",
+  service: "",
+  doctor: "any",
+  date: "",
+  time: "",
+  notes: "",
+};
+
 export function AppointmentForm() {
+  const [form, setForm] = useState(initialForm);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  function updateField(field: keyof typeof form, value: string) {
+    setForm((current) => ({ ...current, [field]: value }));
+  }
+
+  function getLocationLabel(id: string) {
+    return appointmentLocations.find((item) => item.value === id)?.label ?? id;
+  }
+
+  function getServiceLabel(id: string) {
+    return appointmentServices.find((item) => item.value === id)?.label ?? id;
+  }
+
+  function getDoctorLabel(id: string) {
+    if (id === "any") return "Any available doctor";
+    return doctors.find((item) => item.id === id)?.name ?? id;
+  }
+
+  function getWhatsAppPayload() {
+    return {
+      firstName: form.firstName,
+      lastName: form.lastName,
+      phone: form.phone,
+      email: form.email,
+      location: form.location ? getLocationLabel(form.location) : undefined,
+      service: form.service ? getServiceLabel(form.service) : undefined,
+      doctor: getDoctorLabel(form.doctor),
+      date: form.date,
+      time: form.time,
+      notes: form.notes,
+    };
+  }
+
+  function handleWhatsAppClick() {
+    setError("");
+
+    if (!form.firstName || !form.lastName || !form.phone) {
+      setError("Please enter your name and phone number before booking on WhatsApp.");
+      return;
+    }
+
+    openWhatsApp(buildAppointmentWhatsAppMessage(getWhatsAppPayload()));
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setLoading(false);
-    setSubmitted(true);
+    setError("");
+
+    if (!form.location || !form.service || !form.time) {
+      setError("Please select clinic location, service, and preferred time.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      await submitToWeb3Forms({
+        subject: "New Appointment Request - MVN Smile Makers",
+        from_name: "MVN Smile Makers Website",
+        name: `${form.firstName} ${form.lastName}`,
+        email: form.email,
+        phone: form.phone,
+        location: getLocationLabel(form.location),
+        service: getServiceLabel(form.service),
+        doctor: getDoctorLabel(form.doctor),
+        preferred_date: form.date,
+        preferred_time: form.time,
+        notes: form.notes || "None",
+      });
+
+      setSubmitted(true);
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Something went wrong. Please try again or book on WhatsApp."
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (submitted) {
@@ -50,7 +149,10 @@ export function AppointmentForm() {
           <Button
             className="mt-6"
             variant="outline"
-            onClick={() => setSubmitted(false)}
+            onClick={() => {
+              setSubmitted(false);
+              setForm(initialForm);
+            }}
           >
             Book Another Appointment
           </Button>
@@ -69,7 +171,7 @@ export function AppointmentForm() {
           <div>
             <CardTitle>Schedule Your Visit</CardTitle>
             <CardDescription>
-              Fill out the form below and we&apos;ll get back to you shortly.
+              Submit the form to email our clinic, or book instantly on WhatsApp.
             </CardDescription>
           </div>
         </div>
@@ -79,11 +181,25 @@ export function AppointmentForm() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="firstName">First Name *</Label>
-              <Input id="firstName" name="firstName" required placeholder="John" />
+              <Input
+                id="firstName"
+                name="firstName"
+                required
+                placeholder="Rahul"
+                value={form.firstName}
+                onChange={(e) => updateField("firstName", e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="lastName">Last Name *</Label>
-              <Input id="lastName" name="lastName" required placeholder="Doe" />
+              <Input
+                id="lastName"
+                name="lastName"
+                required
+                placeholder="Kumar"
+                value={form.lastName}
+                onChange={(e) => updateField("lastName", e.target.value)}
+              />
             </div>
           </div>
 
@@ -95,7 +211,9 @@ export function AppointmentForm() {
                 name="email"
                 type="email"
                 required
-                placeholder="john@example.com"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={(e) => updateField("email", e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -106,6 +224,8 @@ export function AppointmentForm() {
                 type="tel"
                 required
                 placeholder="+91 98765 43210"
+                value={form.phone}
+                onChange={(e) => updateField("phone", e.target.value)}
               />
             </div>
           </div>
@@ -113,7 +233,11 @@ export function AppointmentForm() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="location">Clinic Location *</Label>
-              <Select name="location" required>
+              <Select
+                value={form.location}
+                onValueChange={(value) => updateField("location", value)}
+                required
+              >
                 <SelectTrigger id="location">
                   <SelectValue placeholder="Select a clinic" />
                 </SelectTrigger>
@@ -128,14 +252,18 @@ export function AppointmentForm() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="service">Service *</Label>
-              <Select name="service" required>
+              <Select
+                value={form.service}
+                onValueChange={(value) => updateField("service", value)}
+                required
+              >
                 <SelectTrigger id="service">
                   <SelectValue placeholder="Select a service" />
                 </SelectTrigger>
                 <SelectContent>
-                  {appointmentServices.map((s) => (
-                    <SelectItem key={s.value} value={s.value}>
-                      {s.label}
+                  {appointmentServices.map((service) => (
+                    <SelectItem key={service.value} value={service.value}>
+                      {service.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -145,15 +273,18 @@ export function AppointmentForm() {
 
           <div className="space-y-2">
             <Label htmlFor="doctor">Preferred Doctor</Label>
-            <Select name="doctor">
+            <Select
+              value={form.doctor}
+              onValueChange={(value) => updateField("doctor", value)}
+            >
               <SelectTrigger id="doctor">
                 <SelectValue placeholder="Any available" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="any">Any Available Doctor</SelectItem>
-                {doctors.map((d) => (
-                  <SelectItem key={d.id} value={d.id}>
-                    {d.name}
+                {doctors.map((doctor) => (
+                  <SelectItem key={doctor.id} value={doctor.id}>
+                    {doctor.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -169,11 +300,17 @@ export function AppointmentForm() {
                 type="date"
                 required
                 min={new Date().toISOString().split("T")[0]}
+                value={form.date}
+                onChange={(e) => updateField("date", e.target.value)}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="time">Preferred Time *</Label>
-              <Select name="time" required>
+              <Select
+                value={form.time}
+                onValueChange={(value) => updateField("time", value)}
+                required
+              >
                 <SelectTrigger id="time">
                   <SelectValue placeholder="Select a time" />
                 </SelectTrigger>
@@ -195,12 +332,27 @@ export function AppointmentForm() {
               name="notes"
               placeholder="Tell us about any concerns or special requests..."
               rows={4}
+              value={form.notes}
+              onChange={(e) => updateField("notes", e.target.value)}
             />
           </div>
 
-          <Button type="submit" className="w-full" size="lg" disabled={loading}>
-            {loading ? "Submitting..." : "Request Appointment"}
-          </Button>
+          {error && (
+            <p className="rounded-md border border-destructive/20 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+              {error}
+            </p>
+          )}
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Button type="submit" className="w-full" size="lg" disabled={loading}>
+              {loading ? "Submitting..." : "Request Appointment"}
+            </Button>
+            <WhatsAppButton
+              fullWidth
+              onClick={handleWhatsAppClick}
+              label="Book on WhatsApp"
+            />
+          </div>
 
           <p className="text-center text-xs text-muted-foreground">
             For dental emergencies, please call us at{" "}

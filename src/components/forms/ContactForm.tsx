@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { submitToWeb3Forms } from "@/lib/web3forms-client";
 import {
   Card,
   CardContent,
@@ -17,13 +18,34 @@ import {
 export function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setLoading(false);
-    setSubmitted(true);
+    setError("");
+
+    const formData = new FormData(e.currentTarget);
+
+    try {
+      await submitToWeb3Forms({
+        subject: `Contact Form: ${String(formData.get("subject"))}`,
+        from_name: "MVN Smile Makers Website",
+        name: String(formData.get("name")),
+        email: String(formData.get("email")),
+        message: String(formData.get("message")),
+      });
+
+      setSubmitted(true);
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Something went wrong. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (submitted) {
@@ -103,6 +125,13 @@ export function ContactForm() {
               rows={5}
             />
           </div>
+
+          {error && (
+            <p className="rounded-md border border-destructive/20 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+              {error}
+            </p>
+          )}
+
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Sending..." : "Send Message"}
           </Button>
