@@ -20,7 +20,7 @@ export const siteConfig = {
   tagline: "Your Trusted Partner in Dental Health",
   description:
     "MVN Smile Makers Dental Care offers comprehensive dental care including implants, endodontics, aesthetics, and general dentistry at three locations in Patna and Hilsa, Bihar. Book your appointment today.",
-  url: "https://mvnsmilemakers.com",
+  url: "https://mvnsmilemakers.vercel.app",
   phones: ["9835938221", "7004417755"],
   email: "hello@mvnsmilemakers.com",
   locations: [
