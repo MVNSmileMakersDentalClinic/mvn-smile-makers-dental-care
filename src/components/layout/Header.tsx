@@ -3,8 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Phone, SmilePlus } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/layout/Logo";
 import { navLinks } from "@/lib/data";
 import { siteConfig, formatPhoneDisplay, getTelLink } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
@@ -35,28 +36,19 @@ export function Header() {
         </div>
       </div>
 
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <SmilePlus className="h-5 w-5" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-lg font-bold leading-tight text-primary">
-              {siteConfig.brandShort.line1}
-            </span>
-            <span className="text-xs leading-tight text-muted-foreground">
-              {siteConfig.brandShort.line2}
-            </span>
-          </div>
-        </Link>
+      <div className="container mx-auto flex h-16 items-center justify-between gap-3 px-4">
+        <Logo size="md" imageClassName="h-10 w-10 md:h-12 md:w-12" />
 
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
+        <nav
+          className="hidden max-w-3xl flex-1 items-center justify-center gap-0.5 xl:flex"
+          aria-label="Main"
+        >
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                "rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
+                "rounded-md px-2.5 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
                 pathname === link.href
                   ? "bg-accent text-primary"
                   : "text-foreground/80"
@@ -68,14 +60,14 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button asChild className="hidden sm:inline-flex">
+          <Button asChild size="sm" className="hidden sm:inline-flex">
             <Link href="/appointment">Book Appointment</Link>
           </Button>
 
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className="xl:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
@@ -91,7 +83,7 @@ export function Header() {
 
       {mobileOpen && (
         <nav
-          className="border-t bg-white px-4 py-4 lg:hidden"
+          className="border-t bg-white px-4 py-4 xl:hidden"
           aria-label="Mobile"
         >
           <div className="flex flex-col gap-1">

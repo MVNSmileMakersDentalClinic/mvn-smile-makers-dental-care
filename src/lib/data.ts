@@ -160,8 +160,106 @@ export const navLinks = [
   { href: "/services", label: "Services" },
   { href: "/about", label: "About" },
   { href: "/doctors", label: "Doctors" },
+  { href: "/gallery", label: "Gallery" },
+  { href: "/posts", label: "Posts" },
   { href: "/testimonials", label: "Testimonials" },
   { href: "/contact", label: "Contact" },
+];
+
+export const galleryItems = [
+  {
+    id: "clinic-rajendra-nagar",
+    title: "Rajendra Nagar Clinic",
+    category: "Our Clinics",
+    image: "/images/mvn_logo.png",
+    description: "MVN Smile Makers Dental Care at Ram Krishna Plaza, Patna.",
+  },
+  {
+    id: "clinic-new-bypass",
+    title: "New Bypass Clinic",
+    category: "Our Clinics",
+    image: null,
+    description: "Modern dental care at West Ramakrishna Nagar, New Bypass, Patna.",
+  },
+  {
+    id: "clinic-hilsa",
+    title: "Hilsa Clinic",
+    category: "Our Clinics",
+    image: null,
+    description: "Serving patients in Hilsa, Nalanda district.",
+  },
+  {
+    id: "treatment-room",
+    title: "Treatment Room",
+    category: "Facilities",
+    image: null,
+    description: "Comfortable, hygienic treatment rooms with modern equipment.",
+  },
+  {
+    id: "dental-equipment",
+    title: "Advanced Equipment",
+    category: "Facilities",
+    image: null,
+    description: "State-of-the-art dental technology for precise care.",
+  },
+  {
+    id: "smile-results",
+    title: "Happy Smiles",
+    category: "Patient Smiles",
+    image: null,
+    description: "Beautiful results from cosmetic and restorative treatments.",
+  },
+];
+
+export const posts = [
+  {
+    id: "free-checkup-camp",
+    title: "Free Dental Check-up Camp",
+    date: "2026-01-15",
+    badge: "Announcement",
+    featured: true,
+    image: null,
+    excerpt:
+      "Join us for a free dental check-up camp at our Rajendra Nagar clinic. Limited slots available — book your visit today!",
+    content:
+      "MVN Smile Makers Dental Care is hosting a free dental check-up camp for new and existing patients. Services include oral examination, basic consultation, and dental health guidance. Visit our Rajendra Nagar clinic or message us on WhatsApp to reserve your slot.",
+  },
+  {
+    id: "extended-saturday-hours",
+    title: "Extended Saturday Hours",
+    date: "2026-01-10",
+    badge: "Update",
+    featured: false,
+    image: null,
+    excerpt:
+      "We now offer extended Saturday hours until 2:00 PM at all Patna locations for your convenience.",
+    content:
+      "To better serve our patients, MVN Smile Makers Dental Care has extended Saturday clinic hours until 2:00 PM at both Patna locations. Walk-ins and appointments are welcome.",
+  },
+  {
+    id: "implant-consultation-offer",
+    title: "Dental Implant Consultation",
+    date: "2025-12-20",
+    badge: "Offer",
+    featured: false,
+    image: null,
+    excerpt:
+      "Consult Dr. Navin Kumar for dental implant treatment. Certified implantologist with advanced training from New Delhi.",
+    content:
+      "Thinking about dental implants? Schedule a consultation with Dr. Navin Kumar, MDS (IDST) and Certified Implantologist. Get expert guidance on single tooth implants, bridges, and full arch restoration at any of our three clinics.",
+  },
+  {
+    id: "new-hilsa-branch",
+    title: "Now Open in Hilsa",
+    date: "2025-11-01",
+    badge: "News",
+    featured: false,
+    image: null,
+    excerpt:
+      "Quality dental care is now available in Hilsa, Nalanda — opposite Allahabad Bank, Sinha Market.",
+    content:
+      "We are proud to announce our Hilsa branch, bringing MVN Smile Makers Dental Care closer to patients in Nalanda district. Visit us at Sinha Market, opposite Allahabad Bank, for general dentistry, implants, and aesthetic treatments.",
+  },
 ];
 
 export const timeSlots = [

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2, Shield, Heart, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { WhatsAppQuickLink } from "@/components/shared/WhatsAppQuickLink";
 import { siteConfig } from "@/lib/metadata";
 
 export function Hero() {
@@ -24,14 +23,13 @@ export function Hero() {
               whole family. From routine cleanings to complete smile
               makeovers, we&apos;re here for you.
             </p>
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
                 <Link href="/appointment">
                   Book Appointment
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
-              <WhatsAppQuickLink />
               <Button asChild size="lg" variant="outline">
                 <Link href="/services">Our Services</Link>
               </Button>

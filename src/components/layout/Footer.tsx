@@ -3,12 +3,11 @@ import {
   Facebook,
   Instagram,
   Twitter,
-  MapPin,
   Phone,
   Mail,
   Clock,
-  SmilePlus,
 } from "lucide-react";
+import { Logo } from "@/components/layout/Logo";
 import { navLinks } from "@/lib/data";
 import { siteConfig } from "@/lib/metadata";
 import { ClinicLocations } from "@/components/shared/ClinicLocations";
@@ -20,17 +19,10 @@ export function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <SmilePlus className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="font-bold text-primary">{siteConfig.name}</p>
-                <p className="text-xs text-muted-foreground">
-                  Quality care since 2010
-                </p>
-              </div>
-            </div>
+            <Logo size="sm" imageClassName="h-10 w-10" />
+            <p className="text-xs text-muted-foreground">
+              Quality dental care across Patna & Hilsa
+            </p>
             <p className="text-sm text-muted-foreground">
               Providing compassionate, comprehensive dental care for the whole
               family in a modern, comfortable environment.

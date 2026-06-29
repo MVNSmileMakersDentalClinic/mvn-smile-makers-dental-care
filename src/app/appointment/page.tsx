@@ -14,7 +14,7 @@ export default function AppointmentPage() {
     <>
       <PageHero
         title="Book an Appointment"
-        description="Schedule your visit in just a few steps. Our team will confirm your appointment within 24 hours."
+        description="Fill in your details and send your booking request on WhatsApp. Our team will confirm your appointment shortly."
       />
 
       <section className="py-16 md:py-20">

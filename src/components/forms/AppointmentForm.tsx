@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar, CheckCircle2 } from "lucide-react";
+import { Calendar } from "lucide-react";
 import {
   appointmentServices,
   appointmentLocations,
@@ -13,8 +13,6 @@ import {
   buildAppointmentWhatsAppMessage,
   openWhatsApp,
 } from "@/lib/whatsapp";
-import { submitToWeb3Forms } from "@/lib/web3forms-client";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,8 +47,6 @@ const initialForm = {
 
 export function AppointmentForm() {
   const [form, setForm] = useState(initialForm);
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   function updateField(field: keyof typeof form, value: string) {
@@ -70,94 +66,35 @@ export function AppointmentForm() {
     return doctors.find((item) => item.id === id)?.name ?? id;
   }
 
-  function getWhatsAppPayload() {
-    return {
-      firstName: form.firstName,
-      lastName: form.lastName,
-      phone: form.phone,
-      email: form.email,
-      location: form.location ? getLocationLabel(form.location) : undefined,
-      service: form.service ? getServiceLabel(form.service) : undefined,
-      doctor: getDoctorLabel(form.doctor),
-      date: form.date,
-      time: form.time,
-      notes: form.notes,
-    };
-  }
-
   function handleWhatsAppClick() {
     setError("");
 
-    if (!form.firstName || !form.lastName || !form.phone) {
-      setError("Please enter your name and phone number before booking on WhatsApp.");
+    if (
+      !form.firstName ||
+      !form.lastName ||
+      !form.phone ||
+      !form.location ||
+      !form.service ||
+      !form.date ||
+      !form.time
+    ) {
+      setError("Please fill in all required fields before booking on WhatsApp.");
       return;
     }
 
-    openWhatsApp(buildAppointmentWhatsAppMessage(getWhatsAppPayload()));
-  }
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    if (!form.location || !form.service || !form.time) {
-      setError("Please select clinic location, service, and preferred time.");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      await submitToWeb3Forms({
-        subject: "New Appointment Request - MVN Smile Makers",
-        from_name: "MVN Smile Makers Website",
-        name: `${form.firstName} ${form.lastName}`,
-        email: form.email,
+    openWhatsApp(
+      buildAppointmentWhatsAppMessage({
+        firstName: form.firstName,
+        lastName: form.lastName,
         phone: form.phone,
+        email: form.email,
         location: getLocationLabel(form.location),
         service: getServiceLabel(form.service),
         doctor: getDoctorLabel(form.doctor),
-        preferred_date: form.date,
-        preferred_time: form.time,
-        notes: form.notes || "None",
-      });
-
-      setSubmitted(true);
-    } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Something went wrong. Please try again or book on WhatsApp."
-      );
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  if (submitted) {
-    return (
-      <Card className="mx-auto max-w-lg text-center">
-        <CardContent className="py-12">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <CheckCircle2 className="h-8 w-8 text-primary" />
-          </div>
-          <h3 className="text-xl font-semibold">Appointment Request Received!</h3>
-          <p className="mt-2 text-muted-foreground">
-            Thank you for choosing {siteConfig.name}. Our team will contact
-            you within 24 hours to confirm your appointment.
-          </p>
-          <Button
-            className="mt-6"
-            variant="outline"
-            onClick={() => {
-              setSubmitted(false);
-              setForm(initialForm);
-            }}
-          >
-            Book Another Appointment
-          </Button>
-        </CardContent>
-      </Card>
+        date: form.date,
+        time: form.time,
+        notes: form.notes,
+      })
     );
   }
 
@@ -171,13 +108,20 @@ export function AppointmentForm() {
           <div>
             <CardTitle>Schedule Your Visit</CardTitle>
             <CardDescription>
-              Submit the form to email our clinic, or book instantly on WhatsApp.
+              Fill in your details below, then send your booking request on
+              WhatsApp.
             </CardDescription>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleWhatsAppClick();
+          }}
+          className="space-y-6"
+        >
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="firstName">First Name *</Label>
@@ -205,12 +149,11 @@ export function AppointmentForm() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="email">Email *</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
-                required
                 placeholder="you@example.com"
                 value={form.email}
                 onChange={(e) => updateField("email", e.target.value)}
@@ -236,7 +179,6 @@ export function AppointmentForm() {
               <Select
                 value={form.location}
                 onValueChange={(value) => updateField("location", value)}
-                required
               >
                 <SelectTrigger id="location">
                   <SelectValue placeholder="Select a clinic" />
@@ -255,7 +197,6 @@ export function AppointmentForm() {
               <Select
                 value={form.service}
                 onValueChange={(value) => updateField("service", value)}
-                required
               >
                 <SelectTrigger id="service">
                   <SelectValue placeholder="Select a service" />
@@ -309,7 +250,6 @@ export function AppointmentForm() {
               <Select
                 value={form.time}
                 onValueChange={(value) => updateField("time", value)}
-                required
               >
                 <SelectTrigger id="time">
                   <SelectValue placeholder="Select a time" />
@@ -343,16 +283,12 @@ export function AppointmentForm() {
             </p>
           )}
 
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Button type="submit" className="w-full" size="lg" disabled={loading}>
-              {loading ? "Submitting..." : "Request Appointment"}
-            </Button>
-            <WhatsAppButton
-              fullWidth
-              onClick={handleWhatsAppClick}
-              label="Book on WhatsApp"
-            />
-          </div>
+          <WhatsAppButton fullWidth onClick={handleWhatsAppClick} />
+
+          <p className="text-center text-xs text-muted-foreground">
+            After clicking, send the pre-filled message in WhatsApp to complete
+            your booking request.
+          </p>
 
           <p className="text-center text-xs text-muted-foreground">
             For dental emergencies, please call us at{" "}
