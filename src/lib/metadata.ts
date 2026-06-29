@@ -9,6 +9,7 @@ export type ClinicLocation = {
   lines: string[];
   pincode: string;
   mapUrl: string;
+  qrCode?: string;
 };
 
 export const siteConfig = {
@@ -34,7 +35,8 @@ export const siteConfig = {
         "Ram Krishna Plaza, West of Rajendra Nagar Flyover",
       ],
       pincode: "800020",
-      mapUrl: "https://maps.app.goo.gl/FjTUSWsQVXnmgKv4A",
+      mapUrl: "https://maps.app.goo.gl/84BebeWiszvh1k2j6",
+      qrCode: "/qr/Kankarbagh-Clinic.png",
     },
     {
       id: "patna-new-bypass",
@@ -43,7 +45,8 @@ export const siteConfig = {
       state: "Bihar",
       lines: ["Bank of India", "West Ramakrishna Nagar, New Bypass"],
       pincode: "800027",
-      mapUrl: "https://maps.app.goo.gl/EYqxX6wzHvFKHEk9A",
+      mapUrl: "https://maps.app.goo.gl/31NdBguADnVtGouV9",
+      qrCode: "/qr/Ramkrishna_Nagar_Clinic.png",
     },
     {
       id: "hilsa",

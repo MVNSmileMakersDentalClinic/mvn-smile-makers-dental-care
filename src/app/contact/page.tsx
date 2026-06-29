@@ -3,7 +3,7 @@ import { Phone, Mail, Clock } from "lucide-react";
 import { siteConfig, createPageMetadata } from "@/lib/metadata";
 import { PageHero } from "@/components/layout/PageHero";
 import { ContactForm } from "@/components/forms/ContactForm";
-import { ClinicLocations } from "@/components/shared/ClinicLocations";
+import { ClinicLocationCards } from "@/components/shared/ClinicLocationCards";
 import { PhoneList } from "@/components/shared/PhoneList";
 
 export const metadata: Metadata = createPageMetadata(
@@ -23,9 +23,9 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <div className="grid gap-8 lg:grid-cols-5">
             <div className="space-y-6 lg:col-span-2">
-              <div className="rounded-xl border bg-white p-5">
+              <div>
                 <h3 className="mb-4 font-semibold">Our Clinic Locations</h3>
-                <ClinicLocations />
+                <ClinicLocationCards />
               </div>
 
               <div className="flex gap-4 rounded-xl border bg-white p-5">
