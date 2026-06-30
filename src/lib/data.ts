@@ -262,6 +262,82 @@ export const posts = [
   },
 ];
 
+export const faqs = [
+  {
+    id: "insurance",
+    question: "Do you accept insurance?",
+    answer:
+      "We accept most major dental insurance plans. Please bring your insurance card to your visit or message us on WhatsApp with your policy details so we can verify coverage before your appointment.",
+  },
+  {
+    id: "payment",
+    question: "What payment options are available?",
+    answer:
+      "We accept cash, UPI, debit/credit cards, and bank transfers. Flexible payment plans may be available for certain treatments — speak with our front desk during your consultation.",
+  },
+  {
+    id: "first-visit",
+    question: "What should I expect on my first visit?",
+    answer:
+      "Your first visit includes a comprehensive oral examination, discussion of your dental history and concerns, and a personalized treatment plan. Please arrive 10 minutes early and bring any previous dental records if available. You can download our patient registration form from the Contact page.",
+  },
+  {
+    id: "emergency",
+    question: "Do you offer same-day emergency care?",
+    answer:
+      "Yes. We offer same-day emergency appointments for toothaches, broken teeth, trauma, and other urgent dental issues. Call 9835938221 or message us on WhatsApp for the fastest response.",
+  },
+  {
+    id: "locations",
+    question: "How many clinic locations do you have?",
+    answer:
+      "We have three clinics — two in Patna (Rajendra Nagar and New Bypass) and one in Hilsa, Nalanda. Each location is listed on our Contact page with Google Maps directions and QR codes for Patna clinics.",
+  },
+  {
+    id: "booking",
+    question: "How do I book an appointment?",
+    answer:
+      "Fill out the appointment form on our website and click 'Book on WhatsApp' to send your request directly. You can also call us at 9835938221 or 7004417755. Our team will confirm your slot shortly.",
+  },
+  {
+    id: "children",
+    question: "Do you treat children and families?",
+    answer:
+      "Absolutely. We welcome patients of all ages and provide gentle, family-friendly dental care. Our clinics are designed to make children feel comfortable from their very first visit.",
+  },
+];
+
+export const patientResources = [
+  {
+    id: "patient-registration",
+    title: "New Patient Registration Form",
+    category: "Patient Form",
+    description: "Fill out before your first visit to save time at the clinic.",
+    file: "/downloads/patient-registration.html",
+  },
+  {
+    id: "medical-history",
+    title: "Medical History Form",
+    category: "Patient Form",
+    description: "Share your medical background and current medications with our team.",
+    file: "/downloads/medical-history.html",
+  },
+  {
+    id: "post-extraction",
+    title: "Post-Extraction Care Guide",
+    category: "Care Guide",
+    description: "Instructions for recovery after a tooth extraction.",
+    file: "/downloads/post-extraction-care.html",
+  },
+  {
+    id: "braces-care",
+    title: "Braces Care Instructions",
+    category: "Care Guide",
+    description: "Daily care tips for patients with braces or aligners.",
+    file: "/downloads/braces-care-guide.html",
+  },
+];
+
 export const timeSlots = [
   "8:00 AM",
   "9:00 AM",

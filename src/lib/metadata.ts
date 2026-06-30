@@ -93,6 +93,11 @@ export function formatLocation(location: ClinicLocation) {
   );
 }
 
+export function getMapEmbedUrl(location: ClinicLocation) {
+  const query = encodeURIComponent(formatLocation(location));
+  return `https://maps.google.com/maps?q=${query}&z=15&output=embed`;
+}
+
 /** @deprecated Use formatLocation with a specific clinic location */
 export function formatAddress() {
   return formatLocation(siteConfig.locations[0]);

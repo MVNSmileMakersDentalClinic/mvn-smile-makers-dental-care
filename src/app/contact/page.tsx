@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import { Phone, Mail, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 import { siteConfig, createPageMetadata } from "@/lib/metadata";
 import { PageHero } from "@/components/layout/PageHero";
-import { ContactForm } from "@/components/forms/ContactForm";
+import { ContactWhatsApp } from "@/components/contact/ContactWhatsApp";
 import { ClinicLocationCards } from "@/components/shared/ClinicLocationCards";
-import { PhoneList } from "@/components/shared/PhoneList";
+import { GoogleMapEmbed } from "@/components/shared/GoogleMapEmbed";
+import { ClickToCall } from "@/components/shared/ClickToCall";
+import { PatientResources } from "@/components/shared/PatientResources";
 
 export const metadata: Metadata = createPageMetadata(
   "Contact Us",
-  "Contact MVN Smile Makers Dental Care at our Patna and Hilsa clinics. Call 9835938221 or 7004417755, or send us a message to book your visit."
+  "Contact MVN Smile Makers Dental Care via WhatsApp or phone. Find all three clinic locations in Patna and Hilsa with Google Maps directions."
 );
 
 export default function ContactPage() {
@@ -16,7 +18,7 @@ export default function ContactPage() {
     <>
       <PageHero
         title="Contact Us"
-        description="Visit us at any of our three clinics in Patna and Hilsa, or reach out by phone — we're here to help."
+        description="Reach us on WhatsApp, call directly, or visit any of our three clinics in Patna and Hilsa."
       />
 
       <section className="py-16 md:py-20">
@@ -28,28 +30,15 @@ export default function ContactPage() {
                 <ClinicLocationCards />
               </div>
 
-              <div className="flex gap-4 rounded-xl border bg-white p-5">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                  <Phone className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold">Call Us</h3>
-                  <PhoneList className="mt-2 text-muted-foreground" stacked />
-                </div>
-              </div>
-
-              <div className="flex gap-4 rounded-xl border bg-white p-5">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                  <Mail className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold">Email Us</h3>
-                  <a
-                    href={`mailto:${siteConfig.email}`}
-                    className="mt-1 text-sm text-muted-foreground hover:text-primary"
-                  >
-                    {siteConfig.email}
-                  </a>
+              <div className="rounded-xl border bg-white p-5">
+                <h3 className="mb-2 font-semibold">Call Us</h3>
+                <p className="mb-3 text-sm text-muted-foreground">
+                  Tap to call directly from your phone
+                </p>
+                <div className="space-y-2">
+                  {siteConfig.phones.map((phone) => (
+                    <ClickToCall key={phone} phone={phone} variant="button" className="w-full justify-center" />
+                  ))}
                 </div>
               </div>
 
@@ -77,11 +66,24 @@ export default function ContactPage() {
             </div>
 
             <div className="lg:col-span-3">
-              <ContactForm />
+              <ContactWhatsApp />
+            </div>
+          </div>
+
+          <div className="mt-16">
+            <h3 className="mb-6 text-center text-2xl font-bold">
+              Find Us on the Map
+            </h3>
+            <div className="grid gap-6 lg:grid-cols-3">
+              {siteConfig.locations.map((location) => (
+                <GoogleMapEmbed key={location.id} location={location} />
+              ))}
             </div>
           </div>
         </div>
       </section>
+
+      <PatientResources />
     </>
   );
 }
