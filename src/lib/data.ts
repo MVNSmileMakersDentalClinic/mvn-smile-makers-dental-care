@@ -280,7 +280,7 @@ export const patientResources = [
   },
 ];
 
-export const patnaTimeSlots = [
+export const patnaWeekdayTimeSlots = [
   "8:00 AM",
   "9:00 AM",
   "10:00 AM",
@@ -291,7 +291,20 @@ export const patnaTimeSlots = [
   "3:00 PM",
   "4:00 PM",
   "5:00 PM",
+  "6:00 PM",
 ];
+
+export const patnaSaturdayTimeSlots = [
+  "9:00 AM",
+  "10:00 AM",
+  "11:00 AM",
+  "12:00 PM",
+  "1:00 PM",
+  "2:00 PM",
+];
+
+/** @deprecated Use getLocationTimeSlots */
+export const patnaTimeSlots = patnaWeekdayTimeSlots;
 
 export const hilsaTimeSlots = [
   "11:00 AM",
@@ -303,14 +316,43 @@ export const hilsaTimeSlots = [
   "5:00 PM",
 ];
 
+export function getLocationTimeSlots(
+  locationId: string,
+  dateValue?: string
+): string[] {
+  if (!locationId || !dateValue) return [];
+
+  const [year, month, day] = dateValue.split("-").map(Number);
+  if (!year || !month || !day) return [];
+
+  const weekday = new Date(year, month - 1, day).getDay();
+
+  if (locationId === "hilsa") {
+    return weekday === 0 || weekday === 3 ? hilsaTimeSlots : [];
+  }
+
+  if (
+    locationId === "patna-rajendra-nagar" ||
+    locationId === "patna-new-bypass"
+  ) {
+    if (weekday >= 1 && weekday <= 5) return patnaWeekdayTimeSlots;
+    if (weekday === 6) return patnaSaturdayTimeSlots;
+    return [];
+  }
+
+  return [];
+}
+
 export const locationTimeSlots: Record<string, string[]> = {
-  "patna-rajendra-nagar": patnaTimeSlots,
-  "patna-new-bypass": patnaTimeSlots,
+  "patna-rajendra-nagar": patnaWeekdayTimeSlots,
+  "patna-new-bypass": patnaWeekdayTimeSlots,
   hilsa: hilsaTimeSlots,
 };
 
-/** JS weekday numbers (0 = Sunday). Omit entry = all days allowed. */
-export const locationAllowedWeekdays: Partial<Record<string, number[]>> = {
+/** JS weekday numbers (0 = Sunday). */
+export const locationAllowedWeekdays: Record<string, number[]> = {
+  "patna-rajendra-nagar": [1, 2, 3, 4, 5, 6],
+  "patna-new-bypass": [1, 2, 3, 4, 5, 6],
   hilsa: [0, 3],
 };
 

@@ -6,7 +6,7 @@ import {
   appointmentServices,
   appointmentLocations,
   doctors,
-  locationTimeSlots,
+  getLocationTimeSlots,
 } from "@/lib/data";
 import {
   buildAppointmentWhatsAppMessage,
@@ -15,7 +15,10 @@ import {
 import { BookingConditions } from "@/components/appointment/BookingConditions";
 import { AppointmentDatePicker } from "@/components/forms/AppointmentDatePicker";
 import {
+  getAppointmentDateError,
+  getAppointmentTimeHint,
   isAppointmentDateAllowed,
+  isAppointmentTimeAllowed,
   parseAppointmentDate,
 } from "@/lib/appointment-dates";
 import { Input } from "@/components/ui/input";
@@ -54,13 +57,13 @@ export function AppointmentForm() {
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState("");
 
-  const availableTimeSlots = form.location
-    ? locationTimeSlots[form.location] ?? []
-    : [];
+  const availableTimeSlots = getLocationTimeSlots(form.location, form.date);
+  const timeHint = getAppointmentTimeHint(form.location, form.date);
 
   function updateField(field: keyof typeof form, value: string) {
     setForm((current) => {
       const updated = { ...current, [field]: value };
+
       if (field === "location") {
         updated.time = "";
         const parsedDate = parseAppointmentDate(updated.date);
@@ -71,6 +74,14 @@ export function AppointmentForm() {
           updated.date = "";
         }
       }
+
+      if (field === "date") {
+        const slots = getLocationTimeSlots(updated.location, value);
+        if (updated.time && !slots.includes(updated.time)) {
+          updated.time = "";
+        }
+      }
+
       return updated;
     });
   }
@@ -109,11 +120,12 @@ export function AppointmentForm() {
       !selectedDate ||
       !isAppointmentDateAllowed(selectedDate, form.location)
     ) {
-      setError(
-        form.location === "hilsa"
-          ? "Hilsa appointments are only available on Wednesdays and Sundays."
-          : "Please select a valid appointment date."
-      );
+      setError(getAppointmentDateError(form.location));
+      return;
+    }
+
+    if (!isAppointmentTimeAllowed(form.location, form.date, form.time)) {
+      setError("Please select a time slot available on your chosen date.");
       return;
     }
 
@@ -282,23 +294,27 @@ export function AppointmentForm() {
             <div className="space-y-2">
               <Label htmlFor="time">
                 Preferred Time *
-                {form.location === "hilsa" && (
+                {timeHint && (
                   <span className="ml-1 text-xs font-normal text-muted-foreground">
-                    (Hilsa hours)
+                    ({timeHint})
                   </span>
                 )}
               </Label>
               <Select
                 value={form.time}
                 onValueChange={(value) => updateField("time", value)}
-                disabled={!form.location}
+                disabled={!form.location || !form.date}
               >
                 <SelectTrigger id="time">
                   <SelectValue
                     placeholder={
-                      form.location
-                        ? "Select a time"
-                        : "Select clinic first"
+                      !form.location
+                        ? "Select clinic first"
+                        : !form.date
+                          ? "Select date first"
+                          : availableTimeSlots.length > 0
+                            ? "Select a time"
+                            : "No slots on this date"
                     }
                   />
                 </SelectTrigger>

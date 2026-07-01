@@ -14,9 +14,9 @@ import { cn } from "@/lib/utils";
 import {
   formatAppointmentDateLabel,
   getAppointmentDateDisabledMatchers,
+  getAppointmentDateHint,
   parseAppointmentDate,
 } from "@/lib/appointment-dates";
-import { locationAllowedWeekdays } from "@/lib/data";
 
 interface AppointmentDatePickerProps {
   value: string;
@@ -33,7 +33,7 @@ export function AppointmentDatePicker({
 }: AppointmentDatePickerProps) {
   const [open, setOpen] = useState(false);
   const selectedDate = parseAppointmentDate(value);
-  const restrictedWeekdays = locationAllowedWeekdays[locationId];
+  const dateHint = getAppointmentDateHint(locationId);
 
   return (
     <div className="space-y-1">
@@ -66,10 +66,8 @@ export function AppointmentDatePicker({
           />
         </PopoverContent>
       </Popover>
-      {restrictedWeekdays && (
-        <p className="text-xs text-muted-foreground">
-          Only Wednesdays and Sundays can be selected for Hilsa.
-        </p>
+      {dateHint && (
+        <p className="text-xs text-muted-foreground">{dateHint}</p>
       )}
     </div>
   );
