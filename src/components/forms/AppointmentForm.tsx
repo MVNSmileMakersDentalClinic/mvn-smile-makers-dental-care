@@ -13,6 +13,11 @@ import {
   openWhatsApp,
 } from "@/lib/whatsapp";
 import { BookingConditions } from "@/components/appointment/BookingConditions";
+import { AppointmentDatePicker } from "@/components/forms/AppointmentDatePicker";
+import {
+  isAppointmentDateAllowed,
+  parseAppointmentDate,
+} from "@/lib/appointment-dates";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -58,6 +63,13 @@ export function AppointmentForm() {
       const updated = { ...current, [field]: value };
       if (field === "location") {
         updated.time = "";
+        const parsedDate = parseAppointmentDate(updated.date);
+        if (
+          parsedDate &&
+          !isAppointmentDateAllowed(parsedDate, value)
+        ) {
+          updated.date = "";
+        }
       }
       return updated;
     });
@@ -89,6 +101,19 @@ export function AppointmentForm() {
       !form.time
     ) {
       setError("Please fill in all required fields before booking on WhatsApp.");
+      return;
+    }
+
+    const selectedDate = parseAppointmentDate(form.date);
+    if (
+      !selectedDate ||
+      !isAppointmentDateAllowed(selectedDate, form.location)
+    ) {
+      setError(
+        form.location === "hilsa"
+          ? "Hilsa appointments are only available on Wednesdays and Sundays."
+          : "Please select a valid appointment date."
+      );
       return;
     }
 
@@ -247,14 +272,11 @@ export function AppointmentForm() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="date">Preferred Date *</Label>
-              <Input
-                id="date"
-                name="date"
-                type="date"
-                required
-                min={new Date().toISOString().split("T")[0]}
+              <AppointmentDatePicker
                 value={form.date}
-                onChange={(e) => updateField("date", e.target.value)}
+                onChange={(value) => updateField("date", value)}
+                locationId={form.location}
+                disabled={!form.location}
               />
             </div>
             <div className="space-y-2">

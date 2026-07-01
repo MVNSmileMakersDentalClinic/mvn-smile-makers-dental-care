@@ -309,6 +309,11 @@ export const locationTimeSlots: Record<string, string[]> = {
   hilsa: hilsaTimeSlots,
 };
 
+/** JS weekday numbers (0 = Sunday). Omit entry = all days allowed. */
+export const locationAllowedWeekdays: Partial<Record<string, number[]>> = {
+  hilsa: [0, 3],
+};
+
 export const locationBookingConditions: Record<
   string,
   { title: string; schedule: string; points: string[] }
