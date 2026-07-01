@@ -233,7 +233,7 @@ export const faqs = [
     id: "locations",
     question: "How many clinic locations do you have?",
     answer:
-      "We have three clinics — two in Patna (Rajendra Nagar and New Bypass) and one in Hilsa, Nalanda. Hilsa has limited weekly hours — please check availability on the appointment page before booking.",
+      "We have three clinics — two in Patna (Rajendra Nagar and New Bypass) and one in Hilsa, Nalanda. Hilsa is open Wednesday & Sunday, 11:00 AM – 5:00 PM — please book on the appointment page before visiting.",
   },
   {
     id: "booking",
@@ -294,12 +294,13 @@ export const patnaTimeSlots = [
 ];
 
 export const hilsaTimeSlots = [
-  "10:00 AM",
   "11:00 AM",
   "12:00 PM",
   "1:00 PM",
   "2:00 PM",
   "3:00 PM",
+  "4:00 PM",
+  "5:00 PM",
 ];
 
 export const locationTimeSlots: Record<string, string[]> = {
@@ -332,12 +333,12 @@ export const locationBookingConditions: Record<
   },
   hilsa: {
     title: "Hilsa Clinic",
-    schedule: "Mon, Wed, Fri & Sat: 10:00 AM – 4:00 PM",
+    schedule: "Wednesday & Sunday: 11:00 AM – 5:00 PM",
     points: [
       "Please book in advance — limited slots available",
       "Dr. Navin Kumar visits on scheduled days",
       "Implant and general dentistry services available",
-      "Closed on Tuesday, Thursday & Sunday",
+      "Closed on Monday, Tuesday, Thursday, Friday & Saturday",
     ],
   },
 };
