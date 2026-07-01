@@ -14,7 +14,7 @@ export function FAQ() {
         <SectionHeading
           eyebrow="FAQ"
           title="Frequently Asked Questions"
-          description="Answers to common questions about our services, payments, first visits, and emergency care."
+          description="Answers to common questions about our services, payments, first visits, and booking."
         />
         <div className="mx-auto max-w-3xl rounded-xl border bg-white px-6">
           <Accordion type="single" collapsible className="w-full">

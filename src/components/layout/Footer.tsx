@@ -126,10 +126,10 @@ export function Footer() {
             reserved.
           </p>
           <div className="flex gap-4 text-sm text-muted-foreground">
-            <Link href="#" className="hover:text-primary">
+            <Link href="/privacy-policy" className="hover:text-primary">
               Privacy Policy
             </Link>
-            <Link href="#" className="hover:text-primary">
+            <Link href="/terms-of-service" className="hover:text-primary">
               Terms of Service
             </Link>
           </div>

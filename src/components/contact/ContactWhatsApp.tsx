@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MessageCircle } from "lucide-react";
+import { WhatsAppIcon } from "@/components/shared/WhatsAppIcon";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,7 +46,7 @@ export function ContactWhatsApp() {
       <CardHeader>
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#25D366]/10">
-            <MessageCircle className="h-5 w-5 text-[#25D366]" />
+            <WhatsAppIcon className="h-6 w-6 text-[#25D366]" />
           </div>
           <div>
             <CardTitle>Contact Us on WhatsApp</CardTitle>

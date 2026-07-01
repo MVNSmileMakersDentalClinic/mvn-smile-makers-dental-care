@@ -6,13 +6,13 @@ import {
   appointmentServices,
   appointmentLocations,
   doctors,
-  timeSlots,
+  locationTimeSlots,
 } from "@/lib/data";
-import { siteConfig, formatPhoneDisplay, getTelLink } from "@/lib/metadata";
 import {
   buildAppointmentWhatsAppMessage,
   openWhatsApp,
 } from "@/lib/whatsapp";
+import { BookingConditions } from "@/components/appointment/BookingConditions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,8 +49,18 @@ export function AppointmentForm() {
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState("");
 
+  const availableTimeSlots = form.location
+    ? locationTimeSlots[form.location] ?? []
+    : [];
+
   function updateField(field: keyof typeof form, value: string) {
-    setForm((current) => ({ ...current, [field]: value }));
+    setForm((current) => {
+      const updated = { ...current, [field]: value };
+      if (field === "location") {
+        updated.time = "";
+      }
+      return updated;
+    });
   }
 
   function getLocationLabel(id: string) {
@@ -108,8 +118,8 @@ export function AppointmentForm() {
           <div>
             <CardTitle>Schedule Your Visit</CardTitle>
             <CardDescription>
-              Fill in your details below, then send your booking request on
-              WhatsApp.
+              Select your clinic, check availability, then send your booking
+              request on WhatsApp.
             </CardDescription>
           </div>
         </div>
@@ -122,6 +132,27 @@ export function AppointmentForm() {
           }}
           className="space-y-6"
         >
+          <div className="space-y-2">
+            <Label htmlFor="location">Clinic Location *</Label>
+            <Select
+              value={form.location}
+              onValueChange={(value) => updateField("location", value)}
+            >
+              <SelectTrigger id="location">
+                <SelectValue placeholder="Select a clinic first" />
+              </SelectTrigger>
+              <SelectContent>
+                {appointmentLocations.map((location) => (
+                  <SelectItem key={location.value} value={location.value}>
+                    {location.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {form.location && <BookingConditions locationId={form.location} />}
+
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="firstName">First Name *</Label>
@@ -175,24 +206,6 @@ export function AppointmentForm() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="location">Clinic Location *</Label>
-              <Select
-                value={form.location}
-                onValueChange={(value) => updateField("location", value)}
-              >
-                <SelectTrigger id="location">
-                  <SelectValue placeholder="Select a clinic" />
-                </SelectTrigger>
-                <SelectContent>
-                  {appointmentLocations.map((location) => (
-                    <SelectItem key={location.value} value={location.value}>
-                      {location.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
               <Label htmlFor="service">Service *</Label>
               <Select
                 value={form.service}
@@ -210,26 +223,25 @@ export function AppointmentForm() {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="doctor">Preferred Doctor</Label>
-            <Select
-              value={form.doctor}
-              onValueChange={(value) => updateField("doctor", value)}
-            >
-              <SelectTrigger id="doctor">
-                <SelectValue placeholder="Any available" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="any">Any Available Doctor</SelectItem>
-                {doctors.map((doctor) => (
-                  <SelectItem key={doctor.id} value={doctor.id}>
-                    {doctor.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="space-y-2">
+              <Label htmlFor="doctor">Preferred Doctor</Label>
+              <Select
+                value={form.doctor}
+                onValueChange={(value) => updateField("doctor", value)}
+              >
+                <SelectTrigger id="doctor">
+                  <SelectValue placeholder="Any available" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any">Any Available Doctor</SelectItem>
+                  {doctors.map((doctor) => (
+                    <SelectItem key={doctor.id} value={doctor.id}>
+                      {doctor.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -246,16 +258,30 @@ export function AppointmentForm() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="time">Preferred Time *</Label>
+              <Label htmlFor="time">
+                Preferred Time *
+                {form.location === "hilsa" && (
+                  <span className="ml-1 text-xs font-normal text-muted-foreground">
+                    (Hilsa hours)
+                  </span>
+                )}
+              </Label>
               <Select
                 value={form.time}
                 onValueChange={(value) => updateField("time", value)}
+                disabled={!form.location}
               >
                 <SelectTrigger id="time">
-                  <SelectValue placeholder="Select a time" />
+                  <SelectValue
+                    placeholder={
+                      form.location
+                        ? "Select a time"
+                        : "Select clinic first"
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  {timeSlots.map((slot) => (
+                  {availableTimeSlots.map((slot) => (
                     <SelectItem key={slot} value={slot}>
                       {slot}
                     </SelectItem>
@@ -288,22 +314,6 @@ export function AppointmentForm() {
           <p className="text-center text-xs text-muted-foreground">
             After clicking, send the pre-filled message in WhatsApp to complete
             your booking request.
-          </p>
-
-          <p className="text-center text-xs text-muted-foreground">
-            For dental emergencies, please call us at{" "}
-            {siteConfig.phones.map((phone, index) => (
-              <span key={phone}>
-                {index > 0 && " or "}
-                <a
-                  href={getTelLink(phone)}
-                  className="font-medium text-primary hover:underline"
-                >
-                  {formatPhoneDisplay(phone)}
-                </a>
-              </span>
-            ))}
-            .
           </p>
         </form>
       </CardContent>

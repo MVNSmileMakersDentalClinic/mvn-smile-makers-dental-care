@@ -1,9 +1,7 @@
-import Link from "next/link";
-import { ArrowRight, GraduationCap } from "lucide-react";
+import { GraduationCap } from "lucide-react";
 import { doctors } from "@/lib/data";
 import { SectionHeading } from "@/components/layout/SectionHeading";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 
 export function DoctorsPreview() {
   return (
@@ -14,7 +12,7 @@ export function DoctorsPreview() {
           title="Meet Our Expert Dentists"
           description="Our skilled team of dental professionals is dedicated to providing personalized, high-quality care."
         />
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
           {doctors.map((doctor) => (
             <div
               key={doctor.id}
@@ -35,7 +33,7 @@ export function DoctorsPreview() {
                 </Badge>
                 <h3 className="text-lg font-semibold">{doctor.name}</h3>
                 <p className="text-sm text-primary">{doctor.title}</p>
-                <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
+                <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
                   {doctor.bio}
                 </p>
                 <div className="mt-3 flex items-center gap-1 text-xs text-muted-foreground">
@@ -45,14 +43,6 @@ export function DoctorsPreview() {
               </div>
             </div>
           ))}
-        </div>
-        <div className="mt-10 text-center">
-          <Button asChild variant="outline" size="lg">
-            <Link href="/doctors">
-              Meet the Full Team
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
         </div>
       </div>
     </section>

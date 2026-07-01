@@ -161,7 +161,6 @@ export const navLinks = [
   { href: "/about", label: "About" },
   { href: "/doctors", label: "Doctors" },
   { href: "/gallery", label: "Gallery" },
-  { href: "/posts", label: "Posts" },
   { href: "/testimonials", label: "Testimonials" },
   { href: "/contact", label: "Contact" },
 ];
@@ -211,57 +210,6 @@ export const galleryItems = [
   },
 ];
 
-export const posts = [
-  {
-    id: "free-checkup-camp",
-    title: "Free Dental Check-up Camp",
-    date: "2026-01-15",
-    badge: "Announcement",
-    featured: true,
-    image: null,
-    excerpt:
-      "Join us for a free dental check-up camp at our Rajendra Nagar clinic. Limited slots available — book your visit today!",
-    content:
-      "MVN Smile Makers Dental Care is hosting a free dental check-up camp for new and existing patients. Services include oral examination, basic consultation, and dental health guidance. Visit our Rajendra Nagar clinic or message us on WhatsApp to reserve your slot.",
-  },
-  {
-    id: "extended-saturday-hours",
-    title: "Extended Saturday Hours",
-    date: "2026-01-10",
-    badge: "Update",
-    featured: false,
-    image: null,
-    excerpt:
-      "We now offer extended Saturday hours until 2:00 PM at all Patna locations for your convenience.",
-    content:
-      "To better serve our patients, MVN Smile Makers Dental Care has extended Saturday clinic hours until 2:00 PM at both Patna locations. Walk-ins and appointments are welcome.",
-  },
-  {
-    id: "implant-consultation-offer",
-    title: "Dental Implant Consultation",
-    date: "2025-12-20",
-    badge: "Offer",
-    featured: false,
-    image: null,
-    excerpt:
-      "Consult Dr. Navin Kumar for dental implant treatment. Certified implantologist with advanced training from New Delhi.",
-    content:
-      "Thinking about dental implants? Schedule a consultation with Dr. Navin Kumar, MDS (IDST) and Certified Implantologist. Get expert guidance on single tooth implants, bridges, and full arch restoration at any of our three clinics.",
-  },
-  {
-    id: "new-hilsa-branch",
-    title: "Now Open in Hilsa",
-    date: "2025-11-01",
-    badge: "News",
-    featured: false,
-    image: null,
-    excerpt:
-      "Quality dental care is now available in Hilsa, Nalanda — opposite Allahabad Bank, Sinha Market.",
-    content:
-      "We are proud to announce our Hilsa branch, bringing MVN Smile Makers Dental Care closer to patients in Nalanda district. Visit us at Sinha Market, opposite Allahabad Bank, for general dentistry, implants, and aesthetic treatments.",
-  },
-];
-
 export const faqs = [
   {
     id: "insurance",
@@ -282,16 +230,10 @@ export const faqs = [
       "Your first visit includes a comprehensive oral examination, discussion of your dental history and concerns, and a personalized treatment plan. Please arrive 10 minutes early and bring any previous dental records if available. You can download our patient registration form from the Contact page.",
   },
   {
-    id: "emergency",
-    question: "Do you offer same-day emergency care?",
-    answer:
-      "Yes. We offer same-day emergency appointments for toothaches, broken teeth, trauma, and other urgent dental issues. Call 9835938221 or message us on WhatsApp for the fastest response.",
-  },
-  {
     id: "locations",
     question: "How many clinic locations do you have?",
     answer:
-      "We have three clinics — two in Patna (Rajendra Nagar and New Bypass) and one in Hilsa, Nalanda. Each location is listed on our Contact page with Google Maps directions and QR codes for Patna clinics.",
+      "We have three clinics — two in Patna (Rajendra Nagar and New Bypass) and one in Hilsa, Nalanda. Hilsa has limited weekly hours — please check availability on the appointment page before booking.",
   },
   {
     id: "booking",
@@ -338,17 +280,70 @@ export const patientResources = [
   },
 ];
 
-export const timeSlots = [
+export const patnaTimeSlots = [
   "8:00 AM",
   "9:00 AM",
   "10:00 AM",
   "11:00 AM",
+  "12:00 PM",
   "1:00 PM",
   "2:00 PM",
   "3:00 PM",
   "4:00 PM",
   "5:00 PM",
 ];
+
+export const hilsaTimeSlots = [
+  "10:00 AM",
+  "11:00 AM",
+  "12:00 PM",
+  "1:00 PM",
+  "2:00 PM",
+  "3:00 PM",
+];
+
+export const locationTimeSlots: Record<string, string[]> = {
+  "patna-rajendra-nagar": patnaTimeSlots,
+  "patna-new-bypass": patnaTimeSlots,
+  hilsa: hilsaTimeSlots,
+};
+
+export const locationBookingConditions: Record<
+  string,
+  { title: string; schedule: string; points: string[] }
+> = {
+  "patna-rajendra-nagar": {
+    title: "Rajendra Nagar Clinic",
+    schedule: "Mon–Fri: 8:00 AM – 6:00 PM · Sat: 9:00 AM – 2:00 PM",
+    points: [
+      "Walk-ins welcome subject to availability",
+      "Both Dr. Navin Kumar and Dr. Veena available",
+      "All services including implants and aesthetics",
+    ],
+  },
+  "patna-new-bypass": {
+    title: "New Bypass Clinic",
+    schedule: "Mon–Fri: 8:00 AM – 6:00 PM · Sat: 9:00 AM – 2:00 PM",
+    points: [
+      "Walk-ins welcome subject to availability",
+      "Both Dr. Navin Kumar and Dr. Veena available",
+      "Convenient location near West Ramakrishna Nagar",
+    ],
+  },
+  hilsa: {
+    title: "Hilsa Clinic",
+    schedule: "Mon, Wed, Fri & Sat: 10:00 AM – 4:00 PM",
+    points: [
+      "Please book in advance — limited slots available",
+      "Dr. Navin Kumar visits on scheduled days",
+      "Implant and general dentistry services available",
+      "Closed on Tuesday, Thursday & Sunday",
+    ],
+  },
+};
+
+/** @deprecated Use locationTimeSlots */
+export const timeSlots = patnaTimeSlots;
 
 export const appointmentServices = services.map((s) => ({
   value: s.id,
